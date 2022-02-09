@@ -81,6 +81,9 @@ usr_map = {
     {{'dark', 'black', 'night'},{'dark_plot', '~'}}
     {{'style'},                 {'has_usr_style', 'stylePlt'}}
     {{'LineWidth', 'width'},    {'has_lnwdth', 'lnwdth'}}
+    {{'units', 'unit'},         {'has_units', 'units'}}
+    {{'black_and_white', 'black_white', 'black-white'}, ...
+                                {'is_black_white', '~'}}
     };
 
 len = @(x)length(x);
@@ -161,7 +164,25 @@ if ~existing_fig
 else
     h = figure(fig_num);
 end
-clr = {'', '', ''};
+
+if ~is_black_white
+    
+    clr = {'', '', ''};
+    
+else
+    % add colors that are very different, so that they can be easily
+    % distinguished in a black-white scale for PDF printing
+    if ~dark_plot
+        clr0 = 'k';
+    else
+        clr0 = 'w';
+    end
+    clr = {clr0, clr0, clr0, clr0, clr0, clr0, clr0, clr0};
+    stylePlt = {'-', '--', 'o', 'dot', 'anythingelse'};
+    
+end
+
+
 trigered_special_case = 0;
 Lx = length(x);
 
@@ -181,10 +202,10 @@ for j = 1:length(y)
     if has_separate_Y_axes
         if mod(j, 2) == 1
             yyaxis left
-            stylePlt{j} = [clr{j}, stylePlt{j}];
         else
             yyaxis right
         end
+        stylePlt{j} = [clr{j}, stylePlt{j}];
     end
     
     if j > Lx
@@ -204,6 +225,17 @@ end
 
 title(figName)
 hold off
+Ly_lab = len(yLab);
+if has_units
+    for iL = 1:Ly_lab
+        iL1 = 1+iL;
+        if 1+iL > len(units)
+            iL1 = len(units);
+        end
+        yLab{iL} = [yLab{iL}, ' [', units{iL1}, ']'];
+    end
+    xLab{1} = [xLab{1}, ' [', units{1}, ']'];
+end
 xlabel(xLab)
 switch len(yLab)
     case 2
