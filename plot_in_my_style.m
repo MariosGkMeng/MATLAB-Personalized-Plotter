@@ -54,8 +54,17 @@ function plot_in_my_style(x, y, figName, varargin)
 %           'xLab', {'t [s]'},...
 %           'yLab', {'v_1 [m/s]', 'v_2 [mm/s]'});
 %       % Can also write: 'xAxis', 'xLab', 'yAxis', 'yLab'
-
-
+% 
+%       % e. Case d., but for black-white page, and with explicit units:
+%       plot_in_my_style(...
+%           X, Y, 'fig',...
+%           'leg',      {'signal_1', 'signal_2'}, ...
+%           'sepY',...
+%           'xLab',     {'t'},...
+%           'yLab',     {'v_1', 'v_2'},...
+%           'units',    {'s', 'm/s', 'm/s^2'},...
+%           'dark',...
+%           'black-white');
 
 
 
@@ -267,16 +276,13 @@ end
 if saveImg
     folderSave = [folderSave, '\'];
     for i_dum = 1:length(figFormat)
-        if ~strcmp(figFormat{i_dum}, 'pdf')
-            name_save = [folderSave, figNameSave, '.', figFormat{i_dum}];
-            saveas(gca, fullfile(name_save), figFormat{i_dum});
-        else
+        if strcmp(figFormat{i_dum}, 'pdf')
             set(h,'PaperPositionMode','Auto','PaperUnits',...
                 'Inches','PaperSize',[pos(3), pos(4)]);
             print(h,figNameSave,'-dpdf','-r0')
-            name_save = [folderSave, figNameSave, '.', figFormat{i_dum}];
-            saveas(gca, fullfile(name_save), figFormat{i_dum});     
         end
+        name_save = [folderSave, figNameSave, '.', figFormat{i_dum}];
+        saveas(gca, fullfile(name_save), figFormat{i_dum});
     end
 end
 
