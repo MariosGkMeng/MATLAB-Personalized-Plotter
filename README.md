@@ -55,6 +55,7 @@ plot_in_my_style(...
     {y_left, y_right}, 'title', ...
     'separate-Y')
 ```
+This is better, not to mention the default style options that the user encapsulates inside the function at all times!
 
 ## Customization capabilities
 
