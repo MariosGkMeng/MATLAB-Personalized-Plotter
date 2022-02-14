@@ -33,12 +33,13 @@ Both types of optional arguments (**must be of type: string**) signal to the fun
 This concept is not very different than how "plot" is already used in MATLAB, however it is made much more compact. All necessary commands of a plot are inserted in the function and are activated by a variable argument that is of much simpler expression.
 For example, in order to plot two signals that have vastly different orders of magnitute, therefore needing to have two distinct y-axes, in MATLAB one would need to write:
 
+```
 % using "plot" function to graph two signals in separate y-axes 
 yyaxis left
 plot(xl, y_left)
 yyaxis right
 plot(xr, y_right)
-
+```
 whereas with the "plot in my style", one can write it much more easily and intuitively:
 
 ```
