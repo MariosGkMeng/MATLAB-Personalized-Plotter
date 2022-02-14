@@ -57,7 +57,12 @@ plot_in_my_style(...
 ```
 This is better, not to mention the default style options that the user encapsulates inside the function at all times!
 
-## Customization capabilities
+## How to use
+
+Open MATLAB, add the functions provided in the repository to your path and type "help plot_in_my_style" in order to run some examples.
+
+
+## How to customize
 
 It is really easy to customize the function.
 If, for example, one needs to frequently plot in "dark mode", which is better for the eyes during the evening, they would only need to add:
@@ -76,8 +81,4 @@ instead of having to remember to write:
 which is the proper built-in way
 
 For this example, with the ```"dark"``` option, the user only needs to get inside the function, find the variable ```usr_map```  and add a new cell element that contains two components. The 1st component is a cell that contains the variable arguments, in the way that they can be formulated in order to signal to the function to print in "dark mode". For example, I have written: ```{'dark', 'black', 'night'}```. So, if the user provides an argument that matches one of the components of the aforegiven cell variable, the function will print in dark mode. The second element of the main cell specifies the name of the conditional variable that corresponds to the user command (e.g., if we write 'is_dark_plot', then later on in the function we can use the boolean variable ```is_dark_plot``` to create the commands needed to plot in dark mode). The 2nd element of this sub-cell corresponds to the identifier of the variable argument (if there is none, simply write ```'~'``` to let the function know).  
-
-## How to use it
-
-Open MATLAB, add the functions provided in the repository to your path and type "help plot_in_my_style" in order to run some examples.
 
