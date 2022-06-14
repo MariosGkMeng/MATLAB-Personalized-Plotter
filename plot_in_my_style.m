@@ -17,7 +17,7 @@ function plot_in_my_style(x, y, figName, varargin)
 %   | variable_arguments | * {'existing_fig', iFig} or                   |
 %   |                    |   {'existing_figure', iFig} or                |
 %   |                    |   {'exist_fig', iFig} or                      |
-%   |                    |   {'exist_figure', iFig}, where iFig is the   |                                            |
+%   |                    |   {'exist_figure', iFig}, where iFig is the   |                            
 %   |                    |   number of the existing figure               |                     
 %   |                    | * {'save', folderSave, figName, figFormat}    |
 %   |                    |                                               |
@@ -53,7 +53,7 @@ function plot_in_my_style(x, y, figName, varargin)
 %           'sepY',...
 %           'xLab', {'t [s]'},...
 %           'yLab', {'v_1 [m/s]', 'v_2 [mm/s]'});
-%       % Can also write: 'xAxis', 'xLab', 'yAxis', 'yLab'
+%       % Can also write: 'xAxis', 'xLab', 'xL', 'yAxis', 'yLab', 'yL'
 % 
 %       % e. Case d., but for black-white page, and with explicit units:
 %       plot_in_my_style(...
@@ -65,43 +65,83 @@ function plot_in_my_style(x, y, figName, varargin)
 %           'units',    {'s', 'm/s', 'm/s^2'},...
 %           'dark',...
 %           'black-white');
+%       % Can also write: 'black_and_white', 'black_white', 'black-white'
+%       f. Case e., but plotting on an existing figure (i.e. not generating a new one)
+%       plot_in_my_style(...
+%           X, Y, 'fig',...
+%           'leg',      {'signal_1', 'signal_2'}, ...
+%           'sepY',...
+%           'xLab',     {'t'},...
+%           'yLab',     {'v_1', 'v_2'},...
+%           'units',    {'s', 'm/s', 'm/s^2'},...
+%           'dark',...
+%           'black-white',...
+%           'exist-fig', 1);
+%       % Can also write: 'existing_fig', 'existing_figure', 'exist_fig', 'exist_figure' 'exist-fig', 'fig-exist'
 
 
 
 
-
+% Gather frequently used functions ========================================
 asc = @(x)any(strcmp(varargin, x));
 fsc = @(x)find(strcmp(varargin, x));
 
 func.asc0 = @(x, y)any(strcmp(y, x));
 func.fsc0 = @(x, y)find(strcmp(y, x));
-
-usr_map = {
-    {{'existing_fig', 'existing_figure', 'exist_fig', 'exist_figure'},...
-                                {'existing_fig', 'fig_num'}}
-    {{'xAxis', 'xLab'},         {'~', 'xLab'}}
-    {{'yAxis', 'yLab'},         {'~', 'yLab'}}
-    {{'legend', 'leg', 'Leg', 'Legend'},...
-                                {'~', 'legTxt'}}
-    {{'sepY'},                  {'has_separate_Y_axes', '~'}}
-    {{'has_reference_signal'},  {'has_reference_signal', '~'}}
-    {{'special_case'},          {'has_special_case', 'special_case'}}
-    {{'subplot'},               {'use_subplot', '~'}}
-    {{'dark', 'black', 'night'},{'dark_plot', '~'}}
-    {{'style'},                 {'has_usr_style', 'stylePlt'}}
-    {{'LineWidth', 'width'},    {'has_lnwdth', 'lnwdth'}}
-    {{'units', 'unit'},         {'has_units', 'units'}}
-    {{'black_and_white', 'black_white', 'black-white'}, ...
-                                {'is_black_white', '~'}}
-    };
-
 len = @(x)length(x);
 
-% Write default values
+% \==================================================\==================================================
+
+% Create a map of variable arguments (left column of 'usr_map') and
+% function related variables that will be used in order to achieve the
+% command imposed by the variable argument:
+% More specifically, the 1st (or left) column of 'usr_map' specifies all
+% viable variable arguments of the function.When the ith element of the 1st
+% column usr_map{i, 1} has dimension larger than one, this means that the
+% user can write the variable argument in different ways, making the
+% program more intuitive.
+% Examples:
+% 1. If the user provides the argument: 'exist_fig' followed by an integer,
+% this tells the function not to create a new figure, but to instead plot
+% in an existing one (specified by the integer)
+usr_map = {
+    {{'existing_fig', 'existing_figure', 'exist_fig', 'exist_figure',...
+    'exist-fig', 'fig-exist', 'fig', 'FIG', 'Fig'},...
+                                    {'existing_fig', 'fig_num'}}
+    {{'xAxis', 'xLab', 'xL', 'xl'},	{'~', 'xLab'}}
+    {{'yAxis', 'yLab', 'yL', 'yl'},	{'~', 'yLab'}}
+    {{'legend', 'leg', 'Leg', 'Legend'},...
+                                    {'~', 'legTxt'}}
+    {{'sepY', 'separate-Y'},        {'has_separate_Y_axes', '~'}}
+    {{'has_reference_signal'},      {'has_reference_signal', '~'}}
+    {{'special_case'},              {'has_special_case', 'special_case'}}
+    {{'subplot'},                   {'use_subplot', '~'}}
+    {{'dark', 'black', 'night'},    {'dark_plot', '~'}}
+    {{'style'},                     {'has_usr_style', 'stylePlt'}}
+    {{'LineWidth', 'width'},        {'has_lnwdth', 'lnwdth'}}
+    {{'units', 'unit'},             {'has_units', 'units'}}
+    {{'black_and_white', 'black_white', 'black-white'}, ...
+                                    {'is_black_white', '~'}}
+    {{'bar'},                       {'is_bar', '~'}}
+    {{'txtbox'},                    {'has_txtbox', 'Stxtbox'}}
+    };
+
+% \==================================================\==================================================
+
+
+% Default Properties
+% =\==================================================\==================================================
 fontSize        = 30;
 lnwdth0         = 3;
 special_case    = 'none';
-%
+figPos = [10 118 981 651];
+figColor_dark = [0.650980392156863 0.650980392156863 0.650980392156863];
+darkColor = [0 0 0];
+lnWdth_special_case = 0.5;
+legTxtClr = [0 0 0];
+legEdgeClr = [0 0 0];
+legClr = [1 1 1];
+% \==================================================\==================================================
 
 switch nargin
     case 0
@@ -149,13 +189,6 @@ switch nargin
 end
 
 
-% Properties
-% =\==================================================\==================================================
-figPos = [10 118 981 651];
-figColor_dark = [0.741176470588235 0.666666666666667 0.666666666666667];
-darkColor = [0 0 0];
-lnWdth_special_case = 0.5;
-% \==================================================\==================================================
 
 if ~has_lnwdth
    lnwdth = lnwdth0; 
@@ -172,30 +205,36 @@ if ~existing_fig
     pos = get(h,'Position');
 else
     h = figure(fig_num);
+    if dark_plot
+        set(h, 'Color', figColor_dark)
+    end
 end
 
 if ~is_black_white
-    
-    clr = {'', '', ''};
-    
+%     clr = {'', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''};
+    clr      = {'b', 'k', 'r', 'm', 'g', 'k',  'b'};
+    stylePlt = {'-', '-', '-', '-', '-', '--', '--'};
 else
     % add colors that are very different, so that they can be easily
     % distinguished in a black-white scale for PDF printing
-    if ~dark_plot
+    if ~dark_plot 
         clr0 = 'k';
     else
         clr0 = 'w';
+        legTxtClr = [1 1 1];
+        legEdgeClr = [1 1 1];
+        legClr = [0 0 0];
     end
     clr = {clr0, clr0, clr0, clr0, clr0, clr0, clr0, clr0};
-    stylePlt = {'-', '--', 'o', 'dot', 'anythingelse'};
-    
+    stylePlt = {'-', '--', '.', 'o', 'anythingelse'};
 end
-
 
 trigered_special_case = 0;
 Lx = length(x);
 
-for j = 1:length(y)
+
+Ly = length(y);
+for j = 1:Ly
     trig_special_case = strcmp(special_case, 'has_predicted_signals')...
         && (j >= 2 + has_reference_signal); 
     if trig_special_case
@@ -209,14 +248,27 @@ for j = 1:length(y)
         stylePlt{j} = 'k-';
     end
     if has_separate_Y_axes
-        if mod(j, 2) == 1
-            yyaxis left
-        else
-            yyaxis right
+        if Ly == 2
+            if mod(j, 2) == 1
+                yyaxis left
+            else
+                yyaxis right
+            end
+        elseif Ly == 3
+            if j < Ly
+                yyaxis left
+            else
+                yyaxis right
+            end
+        elseif Ly == 4
+            if j <= 2
+                yyaxis left
+            else
+                yyaxis right
+            end
         end
-        stylePlt{j} = [clr{j}, stylePlt{j}];
     end
-    
+    stylePlt{j} = [clr{j}, stylePlt{j}];
     if j > Lx
         jx = Lx;
     else
@@ -228,9 +280,20 @@ for j = 1:length(y)
        subplot(Lx, j, 1); 
     end
     
-    plot(x{jx}, y{j}, stylePlt{j}, 'LineWidth', lnwdth);
+    if ~is_bar
+        plot(x{jx}, y{j}, stylePlt{j}, 'LineWidth', lnwdth);
+    else
+        bar(x{jx}, y{j}, 'LineWidth', lnwdth);
+    end
     hold on; grid on;
 end
+
+if has_txtbox
+    dim = [.0 .5 .0 .3];
+    annotation('textbox', dim, 'String', Stxtbox, 'FitBoxToText', 'on');
+end
+
+
 
 title(figName)
 hold off
@@ -248,10 +311,14 @@ end
 xlabel(xLab)
 switch len(yLab)
     case 2
-        yyaxis left
-        ylabel(yLab{1})
-        yyaxis right
-        ylabel(yLab{2})
+        if has_separate_Y_axes
+            yyaxis left
+            ylabel(yLab{1})
+            yyaxis right
+            ylabel(yLab{2})
+        else
+            ylabel(yLab{1})
+        end
     case 1
         ylabel(yLab{1})
     case 0
@@ -261,9 +328,16 @@ switch len(yLab)
 end
 
 if ~strcmp(legTxt, '')
-    legend(legTxt, 'FontSize', 18)
-end
+    
+%     legend1 = legend(axes1,'show');
 
+% set(legend,'TextColor',[1 1 1],...
+%     'Position',[0.749041664282483 0.731490784993324 0.139500002384186 0.102261308809021],...
+%     'FontSize',18,...
+%     'EdgeColor',[1 1 1]);
+    legend(legTxt, 'FontSize', 18, 'Color', legClr,...
+        'TextColor', legTxtClr, 'EdgeColor', legEdgeClr)
+end
 
 if dark_plot
     set(gca,'FontSize',fontSize,'FontWeight','bold','Color',darkColor,...
@@ -285,5 +359,28 @@ if saveImg
         saveas(gca, fullfile(name_save), figFormat{i_dum});
     end
 end
+end
 
+function [cond, varargout] = get_plot_attrib(in, S, func, varargin)
 
+cond = false;
+vout2 = '';
+if ~iscell(S)
+   S = {S}; 
+end
+asc = func.asc0; %@(x, y)any(strcmp(y, x));
+fsc = func.fsc0; %@(x, y)find(strcmp(y, x));
+for i = 1:length(S)
+    if asc(in, S{i})
+        cond = true;
+        if ~isempty(varargin)
+            if asc(varargin, 'position')
+                pos_last = fsc(in, S{i});
+                vout2 = in{pos_last+1};
+            end
+        end
+        break;
+    end
+end
+varargout{1} = vout2;
+end
