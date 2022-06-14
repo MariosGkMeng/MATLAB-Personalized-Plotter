@@ -212,8 +212,13 @@ end
 
 if ~is_black_white
 %     clr = {'', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''};
-    clr      = {'b', 'k', 'r', 'm', 'g', 'k',  'b'};
-    stylePlt = {'-', '-', '-', '-', '-', '--', '--'};
+    if ~dark_plot
+        clr      = {'b', 'k', 'r', 'm', 'g', 'k',  'b'};
+        stylePlt = {'-', '-', '-', '-', '-', '--', '--'};
+    else
+        clr      = {'w', 'b', 'g', 'r', 'm', 'b'};
+        stylePlt = {'-', '-', '-', '-', '-', '--'};
+    end
 else
     % add colors that are very different, so that they can be easily
     % distinguished in a black-white scale for PDF printing
