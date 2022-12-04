@@ -33,7 +33,7 @@ Both types of optional arguments (**must be of type: string**) signal to the fun
 This concept is not very different than how "plot" is already used in MATLAB, however it is made much more compact. All necessary commands of a plot are inserted in the function and are activated by a variable argument that is of much simpler expression.
 For example, in order to plot two signals that have vastly different orders of magnitute, therefore needing to have two distinct y-axes, in MATLAB one would need to write:
 
-```
+``` MATLAB
 % using "plot" function to graph two signals in separate y-axes 
 yyaxis left
 plot(xl, y_left)
@@ -42,14 +42,14 @@ plot(xr, y_right)
 ```
 whereas with the "plot in my style", one can write it much more easily and intuitively:
 
-```
+``` MATLAB
 plot_in_my_style(...
     {xl, xr}, ...
     {y_left, y_right}, 'title', ...
     'sepY')
 ```    
 OR
-```
+``` MATLAB
 plot_in_my_style(...
     {xl, xr}, ...
     {y_left, y_right}, 'title', ...
@@ -67,7 +67,7 @@ Open MATLAB, add the functions provided in the repository to your path and type 
 It is really easy to customize the function.
 If, for example, one needs to frequently plot in "dark mode", which is better for the eyes during the evening, they would only need to add:
 
-```
+``` MATLAB
 plot_in_my_style(...
     {xl, xr}, ...
     {y_left, y_right}, 'title', ...
@@ -76,7 +76,9 @@ plot_in_my_style(...
 ```
 instead of having to remember to write:
 
-```set(gca,[0 0 0], 'GridColor', 'green')```
+``` MATLAB
+set(gca,[0 0 0], 'GridColor', 'green')
+```
 
 which is the proper built-in way
 
