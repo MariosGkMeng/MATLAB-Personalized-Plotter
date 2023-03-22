@@ -26,8 +26,6 @@ function plot_in_my_style(x, y, figName, varargin)
 %   -----------------------------------------------------------------------
 %   ------------------------------ EXAMPLES -------------------------------
 %   -----------------------------------------------------------------------
-%   Example #0: 
-%   -----------
 %       x1 = 0:0.01:5; 
 %       x2 = 0:0.01:10; 
 %       y1 = sin(2*x1);
@@ -78,6 +76,18 @@ function plot_in_my_style(x, y, figName, varargin)
 %           'black-white',...
 %           'exist-fig', 1);
 %       % Can also write: 'existing_fig', 'existing_figure', 'exist_fig', 'exist_figure' 'exist-fig', 'fig-exist'
+%
+%       g. To save the plot in desired formats, using the plot from a.:
+%       plot_in_my_style(X, Y, 'fig', 'save', path_save, name_save, format_save);
+%           % - path_save: string variable with the folder path (without the
+%           %   name). For example: path_save = 'C:\Users\username';
+%           % - name_save: string variable with the name (without extension), 
+%           %   for example: name_save = 'my_awesome_plot';
+%           % - format_save: a cell variable that contains all the different
+%           %   formats in which you want to save the figure. It can be just
+%           %   {'jpg'} if you only want to save in .jpg, or {'jpg', 'png',
+%           %   'pdf'}, if you want to save in .jpg, .png and .pdf
+
 
 
 
@@ -202,14 +212,14 @@ if ~existing_fig
         h = figure('Name', figName, 'Position', figPos, 'Color', figColor_dark);
     end
     set(h,'Units','Inches');
-    pos = get(h,'Position');
+    
 else
     h = figure(fig_num);
     if dark_plot
         set(h, 'Color', figColor_dark)
     end
 end
-
+pos = get(h,'Position');
 if ~is_black_white
 %     clr = {'', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''};
     if ~dark_plot
