@@ -81,12 +81,19 @@ function plot_in_my_style(x, y, figName, varargin)
 %       plot_in_my_style(X, Y, 'fig', 'save', path_save, name_save, format_save);
 %           % - path_save: string variable with the folder path (without the
 %           %   name). For example: path_save = 'C:\Users\username';
+%
 %           % - name_save: string variable with the name (without extension), 
 %           %   for example: name_save = 'my_awesome_plot';
+%
 %           % - format_save: a cell variable that contains all the different
 %           %   formats in which you want to save the figure. It can be just
 %           %   {'jpg'} if you only want to save in .jpg, or {'jpg', 'png',
 %           %   'pdf'}, if you want to save in .jpg, .png and .pdf
+%
+%           % NOTE: There is no need to add the "'save', path_save,
+%           %   name_save, format_save" as the final arguments of the function.
+%           %   They can be in any placement, as long as they are after the
+%           %   "x", "y" and "figName" arguments
 
 
 
