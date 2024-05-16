@@ -1,3 +1,4 @@
+(you can use the help command for this function if you don't want to read the entire README file)
 # MATLAB-Personalized-Plotter
 
 This is a simple tool (both in usage and development) that serves the purpose of simplifying and generalizing the process of plotting in MATLAB.
